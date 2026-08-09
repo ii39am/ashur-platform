@@ -1,0 +1,13 @@
+export { HeroSection } from './HeroSection';
+export { ProductPreviewSection } from './ProductPreviewSection';
+export { DashboardSection } from './DashboardSection';
+export { FeaturesSection } from './FeaturesSection';
+export { AIAssistantSection } from './AIAssistantSection';
+export { TimelineSection } from './TimelineSection';
+export { IndustriesSection } from './IndustriesSection';
+export { ModulesSection } from './ModulesSection';
+export { AnalyticsSection } from './AnalyticsSection';
+export { IntegrationsSection } from './IntegrationsSection';
+export { TestimonialsSection } from './TestimonialsSection';
+export { PricingSection } from './PricingSection';
+export { FAQSection } from './FAQSection';
