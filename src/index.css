@@ -96,6 +96,23 @@
   }
 }
 
+@layer components {
+  .auth-input {
+    width: 100%; min-height: 48px; border-radius: .75rem;
+    border: 1px solid rgba(255,255,255,.12); background: rgba(7,16,19,.7);
+    padding: .75rem 1rem; color: #fff;
+  }
+  .auth-input:focus { border-color: var(--color-brand-500); outline: none; }
+  .auth-input[aria-invalid="true"] { border-color: var(--color-rose-500); }
+  .auth-submit {
+    display: inline-flex; width: 100%; min-height: 48px; align-items: center;
+    justify-content: center; border-radius: .75rem;
+    background: linear-gradient(90deg, var(--color-brand-500), var(--color-cyan-500));
+    padding: .75rem 1.25rem; font-weight: 700; color: #fff;
+  }
+  .auth-submit:disabled { cursor: not-allowed; opacity: .5; }
+}
+
 /* ── Glassmorphism ───────────────────────────────────────────── */
 
 @layer utilities {

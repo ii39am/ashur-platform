@@ -7,10 +7,16 @@ export const Footer: React.FC = () => {
   const { language } = useLanguage();
   const ar = language === 'ar';
   const links = [
-    { label: ar ? 'المميزات' : 'Features', href: '#features' },
-    { label: ar ? 'آلية العمل' : 'How it works', href: '#timeline' },
-    { label: ar ? 'القطاعات' : 'Industries', href: '#industries' },
-    { label: ar ? 'الأسئلة الشائعة' : 'FAQ', href: '#faq' },
+    { label: ar ? 'المميزات' : 'Features', href: '/#features' },
+    { label: ar ? 'آلية العمل' : 'How it works', href: '/#timeline' },
+    { label: ar ? 'القطاعات' : 'Industries', href: '/#industries' },
+    { label: ar ? 'الأسئلة الشائعة' : 'FAQ', href: '/#faq' },
+    { label: ar ? 'الأسعار' : 'Pricing', href: '/pricing' },
+    { label: ar ? 'التحميل' : 'Download', href: '/download' },
+    { label: ar ? 'الخصوصية' : 'Privacy', href: '/privacy' },
+    { label: ar ? 'الشروط' : 'Terms', href: '/terms' },
+    { label: ar ? 'سياسة الاسترداد' : 'Refund policy', href: '/refund-policy' },
+    { label: ar ? 'الدعم' : 'Support', href: '/support' },
   ];
 
   return (
@@ -23,10 +29,9 @@ export const Footer: React.FC = () => {
           <p className="mx-auto mt-4 max-w-2xl text-base text-slate-300">
             {ar ? 'تواصل معنا لمناقشة احتياجات مؤسستك والوحدات المناسبة لفريقك.' : 'Tell us about your operations and we will discuss the modules that fit your team.'}
           </p>
-          <div className="mt-8 flex justify-center">
-            <Button href="mailto:ashurplatform95@gmail.com?subject=Ashur%20ERP%20Consultation" size="lg" icon={<ArrowRight className={`h-5 w-5 ${ar ? 'rotate-180' : ''}`} />}>
-              {ar ? 'راسل فريق آشور' : 'Contact Ashur'}
-            </Button>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Button href="/download" size="lg" icon={<ArrowRight className={`h-5 w-5 ${ar ? 'rotate-180' : ''}`} />}>{ar ? 'تحميل التجربة' : 'Download trial'}</Button>
+            <Button href="mailto:ashurplatform95@gmail.com?subject=Ashur%20ERP%20Consultation" variant="secondary" size="lg">{ar ? 'راسل فريق آشور' : 'Contact Ashur'}</Button>
           </div>
         </div>
       </section>

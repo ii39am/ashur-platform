@@ -1,187 +1,63 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, Globe } from 'lucide-react';
-import { Button } from '../components/ui/Button';
+import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Globe, Menu, Search, UserRound, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../auth/AuthContext';
 
-interface NavbarProps {
-  onOpenSearch: () => void;
-}
-
-export const Navbar: React.FC<NavbarProps> = ({ onOpenSearch }) => {
+export const Navbar: React.FC<{ onOpenSearch: () => void }> = ({ onOpenSearch }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const { t, language, toggleLanguage } = useLanguage();
-
-  const handleScroll = useCallback(() => {
-    setScrolled(window.scrollY > 50);
-  }, []);
+  const auth = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const ar = language === 'ar';
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMobileOpen(false);
-    };
-    window.addEventListener('keydown', closeOnEscape);
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', closeOnEscape);
-    };
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { setMobileOpen(false); setAccountOpen(false); } };
+    window.addEventListener('keydown', onKey);
+    return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey); };
   }, [mobileOpen]);
 
-  const scrollTo = useCallback((href: string) => {
-    setMobileOpen(false);
-    const el = document.querySelector(href);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
+  useEffect(() => { setMobileOpen(false); setAccountOpen(false); }, [location.pathname, location.hash]);
 
-  const navLinks = [
-    { label: t.nav.features, href: '#features' },
-    { label: language === 'ar' ? 'آلية العمل' : 'How it works', href: '#timeline' },
-    { label: t.nav.industries, href: '#industries' },
-    { label: t.nav.faq, href: '#faq' },
+  const links = [
+    { label: t.nav.features, to: '/#features' },
+    { label: ar ? 'آلية العمل' : 'How it works', to: '/#timeline' },
+    { label: t.nav.industries, to: '/#industries' },
+    { label: ar ? 'الأسعار' : 'Pricing', to: '/pricing' },
   ];
 
-  return (
-    <>
-      <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? 'glass-navbar py-3' : 'py-5'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Logo */}
-          <motion.a
-            href="#"
-            className="flex items-center gap-2.5 group"
-            whileHover={{ scale: 1.02 }}
-          >
-            <img src="/brand/ashur-mark.jpg" alt="" className="w-10 h-10 rounded-lg object-contain" />
-            <span className="text-xl font-bold text-white tracking-tight">
-              {t.brandName}<span className="text-brand-400">{t.brandSuffix}</span>
-            </span>
-          </motion.a>
+  const signOut = async () => { await auth.signOut(); navigate('/'); };
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <motion.button
-                key={link.label}
-                onClick={() => scrollTo(link.href)}
-                className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-all duration-300 cursor-pointer"
-                whileHover={{ y: -1 }}
-              >
-                {link.label}
-              </motion.button>
-            ))}
-          </nav>
-
-          {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center gap-3">
-            {/* Search Trigger */}
-            <motion.button
-              onClick={onOpenSearch}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl glass-light border border-white/10 text-slate-400 hover:text-white text-xs font-medium cursor-pointer transition-colors"
-              whileHover={{ scale: 1.03 }}
-              aria-label={t.nav.searchPlaceholder}
-            >
-              <Search className="w-3.5 h-3.5" />
-              <span>{t.nav.searchPlaceholder}</span>
-            </motion.button>
-
-            {/* Language Switcher */}
-            <motion.button
-              onClick={toggleLanguage}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 hover:bg-brand-500/20 text-xs font-semibold cursor-pointer transition-all"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              title="Switch Language / تغيير اللغة"
-              aria-label="Switch language / تغيير اللغة"
-            >
-              <Globe className="w-3.5 h-3.5" />
-              <span>{language === 'en' ? 'العربية' : 'EN'}</span>
-            </motion.button>
-
-            <Button variant="primary" size="sm" href="mailto:ashurplatform95@gmail.com?subject=Ashur%20ERP%20Consultation">
-              {language === 'ar' ? 'تواصل معنا' : 'Contact us'}
-            </Button>
-          </div>
-
-          {/* Mobile Actions */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <motion.button
-              onClick={toggleLanguage}
-              className="px-2.5 py-1 rounded-lg bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-bold"
-              aria-label="Switch language / تغيير اللغة"
-            >
-              {language === 'en' ? 'عربي' : 'EN'}
-            </motion.button>
-            <motion.button
-              className="text-white p-2 cursor-pointer"
-              onClick={() => setMobileOpen(!mobileOpen)}
-              whileTap={{ scale: 0.9 }}
-              aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              aria-expanded={mobileOpen}
-            >
-              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </motion.button>
-          </div>
+  return <>
+    <header className={`fixed inset-x-0 top-0 z-50 transition-all ${scrolled ? 'glass-navbar py-3' : 'py-5'}`}>
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="flex shrink-0 items-center gap-2.5"><img src="/brand/ashur-mark.jpg" alt="" width="40" height="40" className="h-10 w-10 rounded-lg object-contain" /><span className="text-xl font-bold text-white">{t.brandName}<span className="text-brand-400">{t.brandSuffix}</span></span></Link>
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">{links.map((link) => <Link key={link.to} to={link.to} className="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-white">{link.label}</Link>)}</nav>
+        <div className="hidden items-center gap-2 lg:flex">
+          <button onClick={onOpenSearch} className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 text-slate-400 hover:text-white" aria-label="Open quick navigation"><Search className="h-4 w-4" /></button>
+          <button onClick={toggleLanguage} className="flex min-h-11 items-center gap-1.5 rounded-xl border border-brand-500/20 bg-brand-500/10 px-3 text-xs font-semibold text-brand-400" aria-label="Switch language"><Globe className="h-4 w-4" />{language === 'en' ? 'العربية' : 'EN'}</button>
+          <Link to="/download" className="inline-flex min-h-11 items-center rounded-xl border border-white/10 px-4 text-sm font-semibold text-slate-100 hover:bg-white/5">{ar ? 'تحميل التجربة' : 'Download trial'}</Link>
+          {auth.loading ? <span className="h-11 w-28 animate-pulse rounded-xl bg-white/5" aria-label="Restoring account" /> : auth.user ? <div className="relative"><button onClick={() => setAccountOpen((open) => !open)} className="flex min-h-11 items-center gap-2 rounded-xl bg-brand-500 px-4 text-sm font-semibold text-white" aria-expanded={accountOpen}><UserRound className="h-4 w-4" />{ar ? 'الحساب' : 'Account'}</button>{accountOpen && <div className="absolute right-0 top-14 w-48 rounded-xl border border-white/10 bg-dark-800 p-2 shadow-xl"><Link to="/account" className="block rounded-lg px-3 py-2 text-sm text-slate-200 hover:bg-white/5">{ar ? 'لوحة الحساب' : 'Account dashboard'}</Link><button onClick={signOut} className="w-full rounded-lg px-3 py-2 text-start text-sm text-slate-200 hover:bg-white/5">{ar ? 'تسجيل الخروج' : 'Sign out'}</button></div>}</div> : <><Link to="/sign-in" className="inline-flex min-h-11 items-center px-3 text-sm font-semibold text-slate-200">{ar ? 'تسجيل الدخول' : 'Sign in'}</Link><Link to="/create-account" className="inline-flex min-h-11 items-center rounded-xl bg-brand-500 px-4 text-sm font-semibold text-white">{ar ? 'إنشاء حساب' : 'Create account'}</Link></>}
         </div>
-      </motion.header>
-
-      {/* Mobile Menu Dropdown */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 lg:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setMobileOpen(false)}
-            />
-            <motion.div
-              className="absolute top-20 left-4 right-4 glass rounded-2xl p-6"
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-            >
-              <nav className="flex flex-col gap-2">
-                {navLinks.map((link, i) => (
-                  <motion.button
-                    key={link.label}
-                    onClick={() => scrollTo(link.href)}
-                    className="px-4 py-3 text-left text-base font-medium text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition-colors cursor-pointer"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                  >
-                    {link.label}
-                  </motion.button>
-                ))}
-                <div className="border-t border-white/10 pt-4 mt-2 flex flex-col gap-2">
-                  <button onClick={() => { setMobileOpen(false); onOpenSearch(); }} className="min-h-11 rounded-xl border border-white/10 text-sm text-slate-300">
-                    {t.nav.searchPlaceholder}
-                  </button>
-                  <Button variant="primary" size="md" className="w-full justify-center" href="mailto:ashurplatform95@gmail.com?subject=Ashur%20ERP%20Consultation">
-                    {language === 'ar' ? 'تواصل معنا' : 'Contact us'}
-                  </Button>
-                </div>
-              </nav>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
+        <div className="flex items-center gap-2 lg:hidden"><button onClick={toggleLanguage} className="min-h-11 rounded-lg border border-brand-500/20 bg-brand-500/10 px-3 text-xs font-bold text-brand-400" aria-label="Switch language">{language === 'en' ? 'عربي' : 'EN'}</button><button onClick={() => setMobileOpen((open) => !open)} className="flex h-11 w-11 items-center justify-center text-white" aria-label={mobileOpen ? 'Close menu' : 'Open menu'} aria-expanded={mobileOpen}>{mobileOpen ? <X /> : <Menu />}</button></div>
+      </div>
+    </header>
+    <AnimatePresence>{mobileOpen && <motion.div className="fixed inset-0 z-40 lg:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><button className="absolute inset-0 h-full w-full bg-black/60" onClick={() => setMobileOpen(false)} aria-label="Close menu" /><motion.nav aria-label="Mobile navigation" className="absolute inset-x-4 top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-2xl border border-white/10 bg-dark-800 p-4 shadow-2xl" initial={{ y: -16 }} animate={{ y: 0 }}>
+      {links.map((link) => <Link key={link.to} to={link.to} className="flex min-h-12 items-center rounded-xl px-4 text-slate-200 hover:bg-white/5">{link.label}</Link>)}
+      <Link to="/download" className="flex min-h-12 items-center rounded-xl px-4 text-slate-200 hover:bg-white/5">{ar ? 'تحميل التجربة' : 'Download trial'}</Link>
+      <button onClick={() => { setMobileOpen(false); onOpenSearch(); }} className="flex min-h-12 w-full items-center rounded-xl px-4 text-slate-200 hover:bg-white/5">{ar ? 'التنقل السريع' : 'Quick navigation'}</button>
+      <div className="mt-3 border-t border-white/10 pt-3">{auth.loading ? <p className="p-3 text-sm text-slate-400">Restoring account…</p> : auth.user ? <><Link to="/account" className="flex min-h-12 items-center rounded-xl px-4 text-slate-200">{ar ? 'الحساب' : 'Account'}</Link><button onClick={signOut} className="flex min-h-12 w-full items-center rounded-xl px-4 text-slate-200">{ar ? 'تسجيل الخروج' : 'Sign out'}</button></> : <div className="grid gap-2"><Link to="/sign-in" className="flex min-h-12 items-center justify-center rounded-xl border border-white/10 text-slate-200">{ar ? 'تسجيل الدخول' : 'Sign in'}</Link><Link to="/create-account" className="flex min-h-12 items-center justify-center rounded-xl bg-brand-500 font-semibold text-white">{ar ? 'إنشاء حساب' : 'Create account'}</Link></div>}</div>
+    </motion.nav></motion.div>}</AnimatePresence>
+  </>;
 };

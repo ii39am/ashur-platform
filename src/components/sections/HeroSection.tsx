@@ -23,8 +23,8 @@ export const HeroSection: React.FC = () => {
               : 'Ashur brings accounting, inventory, sales, HR, and manufacturing into one organized, easy-to-use system.'}
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-            <Button href="mailto:ashurplatform95@gmail.com?subject=Ashur%20ERP%20Consultation" size="lg" icon={<ArrowRight className={`h-5 w-5 ${language === 'ar' ? 'rotate-180' : ''}`} />}>
-              {language === 'ar' ? 'تواصل معنا' : 'Talk to our team'}
+            <Button href="/download" size="lg" icon={<ArrowRight className={`h-5 w-5 ${language === 'ar' ? 'rotate-180' : ''}`} />}>
+              {language === 'ar' ? 'تحميل التجربة المجانية' : 'Download free trial'}
             </Button>
             <Button href="#product-preview" variant="secondary" size="lg" icon={<LayoutDashboard className="h-5 w-5" />}>
               {language === 'ar' ? 'استعرض المنصة' : 'Explore the platform'}

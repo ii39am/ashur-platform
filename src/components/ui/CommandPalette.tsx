@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Command, ArrowRight, Zap, Bot, Calculator, Package, Users, Contact, Landmark, FileText, Globe } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
   const dialogRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const { t, language, toggleLanguage } = useLanguage();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -58,6 +60,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
     onClose();
     const el = document.querySelector(selector);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+    else navigate(`/${selector}`);
   };
 
   const filtered = items.filter((item) =>
@@ -69,7 +72,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-[max(5rem,env(safe-area-inset-top))] px-4 pb-[env(safe-area-inset-bottom)]" role="dialog" aria-modal="true" aria-label="Quick navigation">
           <motion.div
-            ref={dialogRef}
             className="fixed inset-0 bg-black/70 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -78,6 +80,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
           />
 
           <motion.div
+            ref={dialogRef}
             className="relative w-full max-w-xl glass-card rounded-2xl overflow-hidden shadow-2xl border border-white/15 z-10"
             initial={{ opacity: 0, scale: 0.95, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -130,7 +133,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose 
               <span className="flex items-center gap-1">
                 <Command className="w-3 h-3" /> Navigation Shortcut
               </span>
-              <span>Ashur OS v2.5</span>
+              <span>Ashur Platform</span>
             </div>
           </motion.div>
         </div>

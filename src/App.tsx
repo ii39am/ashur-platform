@@ -1,85 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
-import { Navbar } from './layout/Navbar';
-import { Footer } from './layout/Footer';
-import { CommandPalette } from './components/ui/CommandPalette';
-import {
-  HeroSection,
-  ProductPreviewSection,
-  FeaturesSection,
-  TimelineSection,
-  IndustriesSection,
-  FAQSection,
-} from './components/sections';
+import { AuthProvider } from './auth/AuthContext';
+import { GuestOnly, RequireAuth, RequireVerifiedEmail } from './auth/RouteGuards';
+import { SiteLayout } from './layout/SiteLayout';
+import { HomePage } from './pages/HomePage';
+const SignInPage = lazy(() => import('./pages/SignInPage').then((module) => ({ default: module.SignInPage })));
+const RegisterPage = lazy(() => import('./pages/RegisterPage').then((module) => ({ default: module.RegisterPage })));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then((module) => ({ default: module.ForgotPasswordPage })));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then((module) => ({ default: module.ResetPasswordPage })));
+const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage').then((module) => ({ default: module.AuthCallbackPage })));
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage').then((module) => ({ default: module.VerifyEmailPage })));
+const AccountPage = lazy(() => import('./pages/AccountPage').then((module) => ({ default: module.AccountPage })));
+const DownloadPage = lazy(() => import('./pages/DownloadPage').then((module) => ({ default: module.DownloadPage })));
+const PricingPage = lazy(() => import('./pages/PricingPage').then((module) => ({ default: module.PricingPage })));
+const LegalPage = lazy(() => import('./pages/LegalPage').then((module) => ({ default: module.LegalPage })));
+const SupportPage = lazy(() => import('./pages/SupportPage').then((module) => ({ default: module.SupportPage })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
 
-/* ═══════════════════════════════════════════════════════════════
-   Aurora Background
-   ═══════════════════════════════════════════════════════════════ */
-
-function AuroraBackground() {
-  return (
-    <div className="aurora-bg">
-      <div className="aurora-blob aurora-blob-1" />
-      <div className="aurora-blob aurora-blob-2" />
-      <div className="aurora-blob aurora-blob-3" />
-      <div className="aurora-blob aurora-blob-4" />
-    </div>
-  );
+function RouteLoading() {
+  return <main className="flex min-h-screen items-center justify-center bg-dark-950" aria-busy="true"><p className="text-slate-300">Loading page…</p></main>;
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   Main App Content Component
-   ═══════════════════════════════════════════════════════════════ */
-
-function MainAppContent() {
-  const [searchOpen, setSearchOpen] = useState(false);
-
-  useEffect(() => {
-    const handleShortcut = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault();
-        setSearchOpen((open) => !open);
-      }
-    };
-    window.addEventListener('keydown', handleShortcut);
-    return () => window.removeEventListener('keydown', handleShortcut);
-  }, []);
-
-  return (
-    <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}>
-          {/* Global Ambient & Physics Cursor */}
-          <AuroraBackground />
-          <div className="noise-overlay" />
-
-          {/* Navigation & Command Palette */}
-          <Navbar onOpenSearch={() => setSearchOpen(true)} />
-          <CommandPalette isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
-
-          <main>
-            <HeroSection />
-            <ProductPreviewSection />
-            <FeaturesSection />
-            <TimelineSection />
-            <IndustriesSection />
-            <FAQSection />
-          </main>
-
-          <Footer />
-      </motion.div>
-    </>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   Root App Wrapper with LanguageProvider
-   ═══════════════════════════════════════════════════════════════ */
 
 export default function App() {
-  return (
-    <LanguageProvider>
-      <MainAppContent />
-    </LanguageProvider>
-  );
+  return <LanguageProvider><BrowserRouter><AuthProvider><Suspense fallback={<RouteLoading />}><Routes>
+    <Route element={<SiteLayout />}>
+      <Route index element={<HomePage />} />
+      <Route path="pricing" element={<PricingPage />} />
+      <Route path="support" element={<SupportPage />} />
+      <Route path="privacy" element={<LegalPage type="privacy" />} />
+      <Route path="terms" element={<LegalPage type="terms" />} />
+      <Route path="refund-policy" element={<LegalPage type="refunds" />} />
+      <Route element={<RequireAuth />}><Route path="account" element={<AccountPage />} /><Route path="verify-email" element={<VerifyEmailPage />} /></Route>
+      <Route element={<RequireVerifiedEmail />}><Route path="download" element={<DownloadPage />} /></Route>
+    </Route>
+    <Route element={<GuestOnly />}><Route path="sign-in" element={<SignInPage />} /><Route path="create-account" element={<RegisterPage />} /><Route path="forgot-password" element={<ForgotPasswordPage />} /></Route>
+    <Route path="auth/callback" element={<AuthCallbackPage />} />
+    <Route path="auth/reset-password" element={<ResetPasswordPage />} />
+    <Route path="*" element={<NotFoundPage />} />
+  </Routes></Suspense></AuthProvider></BrowserRouter></LanguageProvider>;
 }
