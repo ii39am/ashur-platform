@@ -23,6 +23,16 @@ export function RequireVerifiedEmail() {
   return <Outlet />;
 }
 
+export function RequireCompletedProfile() {
+  const auth = useAuth();
+  const location = useLocation();
+  if (auth.loading || auth.profileLoading) return <AuthLoading />;
+  if (!auth.user) return <Navigate to="/sign-in" replace state={{ from: `${location.pathname}${location.search}` }} />;
+  if (!auth.verified) return <Navigate to="/verify-email" replace state={{ from: `${location.pathname}${location.search}` }} />;
+  if (!auth.profile) return <Navigate to="/verify-email" replace state={{ from: `${location.pathname}${location.search}`, setupRequired: true }} />;
+  return <Outlet />;
+}
+
 export function GuestOnly() {
   const auth = useAuth();
   if (auth.loading) return <AuthLoading />;

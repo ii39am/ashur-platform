@@ -2,7 +2,6 @@ import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 import { getSupabaseClient, isSupabaseConfigured } from './supabaseClient';
 
 export interface SignUpInput {
-  fullName: string;
   email: string;
   password: string;
   nextPath?: string;
@@ -46,7 +45,6 @@ export const authService = {
       email: normalizeEmail(input.email),
       password: input.password,
       options: {
-        data: { full_name: input.fullName.trim() },
         emailRedirectTo: callbackUrl.toString(),
       },
     });
@@ -84,6 +82,12 @@ export const authService = {
       options: { emailRedirectTo: callbackUrl.toString() },
     });
     if (error) throw error;
+  },
+
+  async verifySignupOtp(email: string, token: string): Promise<AuthResult> {
+    const { data, error } = await (await getSupabaseClient()).auth.verifyOtp({ email: normalizeEmail(email), token, type: 'signup' });
+    if (error) throw error;
+    return data;
   },
 
   async updatePassword(password: string) {

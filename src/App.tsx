@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './auth/AuthContext';
-import { GuestOnly, RequireAuth, RequireVerifiedEmail } from './auth/RouteGuards';
+import { GuestOnly, RequireAuth, RequireCompletedProfile } from './auth/RouteGuards';
 import { SiteLayout } from './layout/SiteLayout';
 import { HomePage } from './pages/HomePage';
 const SignInPage = lazy(() => import('./pages/SignInPage').then((module) => ({ default: module.SignInPage })));
@@ -11,6 +11,7 @@ const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then(
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then((module) => ({ default: module.ResetPasswordPage })));
 const AuthCallbackPage = lazy(() => import('./pages/AuthCallbackPage').then((module) => ({ default: module.AuthCallbackPage })));
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage').then((module) => ({ default: module.VerifyEmailPage })));
+const AccountCreatedPage = lazy(() => import('./pages/AccountCreatedPage').then((module) => ({ default: module.AccountCreatedPage })));
 const AccountPage = lazy(() => import('./pages/AccountPage').then((module) => ({ default: module.AccountPage })));
 const DownloadPage = lazy(() => import('./pages/DownloadPage').then((module) => ({ default: module.DownloadPage })));
 const PricingPage = lazy(() => import('./pages/PricingPage').then((module) => ({ default: module.PricingPage })));
@@ -31,10 +32,13 @@ export default function App() {
       <Route path="privacy" element={<LegalPage type="privacy" />} />
       <Route path="terms" element={<LegalPage type="terms" />} />
       <Route path="refund-policy" element={<LegalPage type="refunds" />} />
-      <Route element={<RequireAuth />}><Route path="account" element={<AccountPage />} /><Route path="verify-email" element={<VerifyEmailPage />} /></Route>
-      <Route element={<RequireVerifiedEmail />}><Route path="download" element={<DownloadPage />} /></Route>
+      <Route path="trial-download-policy" element={<LegalPage type="trial" />} />
+      <Route element={<RequireAuth />}><Route path="account" element={<AccountPage />} /></Route>
+      <Route path="verify-email" element={<VerifyEmailPage />} />
+      <Route element={<RequireCompletedProfile />}><Route path="download" element={<DownloadPage />} /><Route path="account-created" element={<AccountCreatedPage />} /></Route>
     </Route>
-    <Route element={<GuestOnly />}><Route path="sign-in" element={<SignInPage />} /><Route path="create-account" element={<RegisterPage />} /><Route path="forgot-password" element={<ForgotPasswordPage />} /></Route>
+    <Route path="create-account" element={<RegisterPage />} />
+    <Route element={<GuestOnly />}><Route path="sign-in" element={<SignInPage />} /><Route path="forgot-password" element={<ForgotPasswordPage />} /></Route>
     <Route path="auth/callback" element={<AuthCallbackPage />} />
     <Route path="auth/reset-password" element={<ResetPasswordPage />} />
     <Route path="*" element={<NotFoundPage />} />

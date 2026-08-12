@@ -1,0 +1,10 @@
+import React, { useRef, useState } from 'react';
+import { CheckCircle2 } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { AuthShell } from '../components/auth/AuthShell';
+import { OnboardingProgress } from '../components/auth/OnboardingProgress';
+import { FormFeedback } from '../components/auth/FormFeedback';
+import { profileService } from '../auth/profileService';
+import { useLanguage } from '../context/LanguageContext';
+import { onboardingTranslations } from '../i18n/onboardingTranslations';
+export function AccountCreatedPage() { const { language } = useLanguage(); const copy = onboardingTranslations[language]; const state = useLocation().state as { emailPending?: boolean } | null; const [pending, setPending] = useState(Boolean(state?.emailPending)); const [sending, setSending] = useState(false); const [sent, setSent] = useState(false); const lock = useRef(false); const retry = async () => { if (lock.current) return; lock.current = true; setSending(true); try { const result = await profileService.requestWelcomeEmail(); if (result.accepted) { setPending(false); setSent(true); } } catch { setPending(true); } finally { lock.current = false; setSending(false); } }; return <AuthShell title={copy.complete.title} description={copy.complete.body}><OnboardingProgress labels={copy.steps} current={3} /><CheckCircle2 className="mx-auto my-7 h-16 w-16 text-emerald-400" aria-hidden="true" />{pending && <><FormFeedback type="info">{copy.complete.emailPending}</FormFeedback><button type="button" onClick={retry} disabled={sending} className="mt-3 min-h-11 w-full rounded-xl border border-white/10 px-4 text-slate-200 disabled:opacity-50">{sending ? copy.common.loading : copy.complete.retryEmail}</button></>}{sent && <FormFeedback type="success">{copy.complete.emailSent}</FormFeedback>}<div className="mt-7 grid gap-3 sm:grid-cols-2"><Link to="/download" className="auth-submit text-center">{copy.complete.download}</Link><Link to="/account" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/10 px-5 font-semibold text-slate-200">{copy.complete.account}</Link></div></AuthShell>; }

@@ -16,6 +16,7 @@ export const Footer: React.FC = () => {
     { label: ar ? 'الخصوصية' : 'Privacy', href: '/privacy' },
     { label: ar ? 'الشروط' : 'Terms', href: '/terms' },
     { label: ar ? 'سياسة الاسترداد' : 'Refund policy', href: '/refund-policy' },
+    { label: ar ? 'سياسة التجربة والتنزيل' : 'Trial & download policy', href: '/trial-download-policy' },
     { label: ar ? 'الدعم' : 'Support', href: '/support' },
   ];
 

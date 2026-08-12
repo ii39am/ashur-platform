@@ -347,6 +347,17 @@ button, [role="button"], input, select { min-height: 44px; }
   }
 }
 
+@media print {
+  .legal-page { background: #fff !important; color: #111827 !important; padding: 0 !important; }
+  .legal-page header, .legal-page footer { border-color: #d1d5db !important; }
+  .legal-page aside, .legal-page .legal-print, body > div > header, body > div > footer { display: none !important; }
+  .legal-page article { max-width: none !important; }
+  .legal-page > article > div { display: block !important; }
+  .legal-section { break-inside: avoid; border-color: #d1d5db !important; background: #fff !important; box-shadow: none !important; }
+  .legal-page h1, .legal-page h2 { color: #111827 !important; }
+  .legal-page p, .legal-page li, .legal-page span { color: #374151 !important; }
+}
+
 /* ── Keyframes ───────────────────────────────────────────────── */
 
 @keyframes aurora-float {

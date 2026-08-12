@@ -4,8 +4,10 @@ import { useAuth } from '../auth/AuthContext';
 import { licensingService, type LicenseSnapshot } from '../licensing/licensingService';
 import { availableDownloadBuilds } from '../config/downloads';
 import { FormFeedback } from '../components/auth/FormFeedback';
+import { useLanguage } from '../context/LanguageContext';
 
 export function AccountPage() {
+  const { language } = useLanguage();
   const auth = useAuth();
   const navigate = useNavigate();
   const [license, setLicense] = useState<LicenseSnapshot | null>(null);
@@ -20,5 +22,6 @@ export function AccountPage() {
       {[['Name', name], ['Email', auth.user?.email ?? 'Not available'], ['Email verification', auth.verified ? 'Verified' : 'Not verified'], ['Trial status', license?.trialStatus ?? 'Not available'], ['Trial expiration', license?.trialExpiresAt ?? 'Not available'], ['Current plan', license?.planEntitlement ?? 'Not available'], ['Subscription status', license?.subscriptionStatus ?? 'Not available'], ['Available downloads', String(availableDownloadBuilds.length)]].map(([label,value]) => <div key={label} className="rounded-2xl border border-white/10 bg-dark-800 p-5"><dt className="text-sm text-slate-400">{label}</dt><dd className="mt-2 break-words font-semibold text-white">{value}</dd></div>)}
     </dl>
     <div className="mt-8 flex flex-wrap gap-3">{auth.verified ? <Link to="/download" className="auth-submit max-w-xs">View downloads</Link> : <Link to="/verify-email" className="auth-submit max-w-xs">Verify email</Link>}<a href="mailto:ashurplatform95@gmail.com?subject=Ashur%20Account%20Support" className="inline-flex min-h-11 items-center rounded-xl border border-white/10 px-6 text-slate-200">Contact support</a></div>
+    <nav aria-label={language === 'ar' ? 'الوثائق القانونية' : 'Legal documents'} className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm"><Link className="min-h-11 content-center text-brand-400" to="/terms">{language === 'ar' ? 'الشروط' : 'Terms'}</Link><Link className="min-h-11 content-center text-brand-400" to="/privacy">{language === 'ar' ? 'الخصوصية' : 'Privacy'}</Link><Link className="min-h-11 content-center text-brand-400" to="/trial-download-policy">{language === 'ar' ? 'التجربة والتنزيل' : 'Trial & downloads'}</Link><Link className="min-h-11 content-center text-brand-400" to="/refund-policy">{language === 'ar' ? 'الاسترداد' : 'Refunds'}</Link></nav>
   </div></main>;
 }
