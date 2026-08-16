@@ -1,14 +1,17 @@
 export type LegalDocumentId = 'terms' | 'privacy' | 'trial' | 'refunds';
-export type LegalDocumentStatus = 'draft' | 'approved';
+export type LegalDocumentStatus = 'draft' | 'internally_approved';
+export type LegalPublicationStatus = 'inactive' | 'published';
 
 export interface LegalDocumentConfiguration {
   id: LegalDocumentId;
   route: string;
   status: LegalDocumentStatus;
+  publicationStatus: LegalPublicationStatus;
   version: string | null;
   effectiveDate: string | null;
   lastUpdatedDate: string | null;
-  requiresQualifiedIraqiCounselApproval: true;
+  lawyerReviewed: boolean;
+  registrationAcceptanceRequired: boolean;
 }
 
 export interface LegalBusinessConfiguration {
@@ -30,15 +33,29 @@ const draftDocument = (id: LegalDocumentId, route: string): LegalDocumentConfigu
   id,
   route,
   status: 'draft',
+  publicationStatus: 'inactive',
   version: null,
   effectiveDate: null,
   lastUpdatedDate: null,
-  requiresQualifiedIraqiCounselApproval: true,
+  lawyerReviewed: false,
+  registrationAcceptanceRequired: false,
+});
+
+const publishedRegistrationDocument = (id: 'terms' | 'privacy', route: string): LegalDocumentConfiguration => ({
+  id,
+  route,
+  status: 'internally_approved',
+  publicationStatus: 'published',
+  version: '1.0.0',
+  effectiveDate: '2026-08-16',
+  lastUpdatedDate: '2026-08-16',
+  lawyerReviewed: false,
+  registrationAcceptanceRequired: true,
 });
 
 export const legalDocuments = {
-  terms: draftDocument('terms', '/terms'),
-  privacy: draftDocument('privacy', '/privacy'),
+  terms: publishedRegistrationDocument('terms', '/terms'),
+  privacy: publishedRegistrationDocument('privacy', '/privacy'),
   trial: draftDocument('trial', '/trial-download-policy'),
   refunds: draftDocument('refunds', '/refund-policy'),
 } satisfies Record<LegalDocumentId, LegalDocumentConfiguration>;
@@ -59,20 +76,20 @@ export const legalBusinessConfiguration: LegalBusinessConfiguration = {
 };
 
 const publishable = (document: LegalDocumentConfiguration) =>
-  document.status === 'approved' &&
+  document.status === 'internally_approved' &&
+  document.publicationStatus === 'published' &&
   Boolean(document.version && document.effectiveDate && document.lastUpdatedDate);
 
 export const isLegalDocumentPublishable = (id: LegalDocumentId) => publishable(legalDocuments[id]);
 
-export const registrationLegalReady =
-  isLegalDocumentPublishable('terms') &&
-  isLegalDocumentPublishable('privacy') &&
-  Boolean(
-    legalBusinessConfiguration.legalEntityName &&
-    legalBusinessConfiguration.legalEmail &&
-    legalBusinessConfiguration.privacyEmail &&
-    legalBusinessConfiguration.minimumAccountAge,
-  );
+export const registrationDocumentsReady = (documents: Pick<typeof legalDocuments, 'terms' | 'privacy'>) =>
+  publishable(documents.terms) &&
+  publishable(documents.privacy) &&
+  documents.terms.registrationAcceptanceRequired &&
+  documents.privacy.registrationAcceptanceRequired &&
+  documents.terms.version === documents.privacy.version;
+
+export const registrationLegalReady = registrationDocumentsReady(legalDocuments);
 
 export const downloadLegalReady = isLegalDocumentPublishable('trial');
 export const paymentLegalReady = isLegalDocumentPublishable('refunds');

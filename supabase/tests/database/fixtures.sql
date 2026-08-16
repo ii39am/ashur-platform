@@ -6,7 +6,7 @@ values
 ('00000000-0000-0000-0000-000000000000','10000000-0000-0000-0000-000000000003','authenticated','authenticated','unverified@example.test','',null,'{}','{}',now(),now());
 
 set role service_role;
-select (public.finalize_ashur_registration('10000000-0000-0000-0000-000000000001','User A','+9647701234567',false,null,null,null,null,false,null,'en',false,true,true,'terms-v1','privacy-v1',repeat('a',64))).id;
+select (public.finalize_ashur_registration('10000000-0000-0000-0000-000000000001','User A','+9647701234567',false,null,null,null,null,false,null,'en',false,true,true,'1.0.0','1.0.0',repeat('a',64))).id;
 reset role;
 
 do $$

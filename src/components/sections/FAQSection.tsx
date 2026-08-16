@@ -11,14 +11,14 @@ const content = {
     { question: 'Which modules are available?', answer: 'The website currently presents accounting, point of sale, inventory, manufacturing, customer management, and human resources as core capabilities. Contact the Ashur team to confirm the exact scope for your organization.' },
     { question: 'Can Ashur fit our industry?', answer: 'Ashur is presented for retail, restaurants, healthcare, construction, manufacturing, and logistics. Requirements vary, so the team should review your workflow before recommending a setup.' },
     { question: 'How do we get started?', answer: 'Contact the Ashur team with a short description of your organization and operational needs. They can then discuss suitability and next steps with you.' },
-    { question: 'Where can I request technical details?', answer: 'Use the contact action on this page or email ashurplatform95@gmail.com for current implementation, hosting, security, and support information.' },
+    { question: 'Where can I request technical details?', answer: 'A verified public support channel has not yet been published. The support page will show it after verification.' },
   ],
   ar: [
     { question: 'ما هي منصة آشور؟', answer: 'آشور هي منصة لإدارة موارد المؤسسات تجمع العمليات الأساسية مثل المحاسبة والمخزون والمبيعات والموارد البشرية والتصنيع في نظام واحد.' },
     { question: 'ما الوحدات المتوفرة؟', answer: 'يعرض الموقع حالياً المحاسبة ونقاط البيع والمخزون والتصنيع وإدارة العملاء والموارد البشرية كقدرات أساسية. تواصل مع فريق آشور لتأكيد النطاق المناسب لمؤسستك.' },
     { question: 'هل تناسب آشور قطاعنا؟', answer: 'تُعرض آشور لقطاعات التجزئة والمطاعم والرعاية الصحية والمقاولات والتصنيع والخدمات اللوجستية. تختلف المتطلبات، لذلك يراجع الفريق سير عملك قبل اقتراح الإعداد.' },
     { question: 'كيف نبدأ؟', answer: 'تواصل مع فريق آشور وأرسل وصفاً مختصراً لمؤسستك واحتياجاتها التشغيلية، ليتم مناقشة مدى الملاءمة والخطوات التالية.' },
-    { question: 'أين يمكن طلب التفاصيل التقنية؟', answer: 'استخدم زر التواصل في هذه الصفحة أو البريد ashurplatform95@gmail.com للحصول على المعلومات الحالية حول التنفيذ والاستضافة والأمان والدعم.' },
+    { question: 'أين يمكن طلب التفاصيل التقنية؟', answer: 'لم تُنشر بعد قناة دعم عامة موثقة. ستعرضها صفحة الدعم بعد التحقق منها.' },
   ],
 };
 

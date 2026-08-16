@@ -25,12 +25,12 @@ Deno.test('registration test mode requires exclusive localhost origin and draft-
     assert(legalVersions('http://localhost:5173').mode==='test','test mode not identified');
     throws(()=>legalVersions('http://127.0.0.1:5173'),'registration_unavailable');
     Deno.env.set('REGISTRATION_ENABLED','true'); throws(()=>legalVersions('http://localhost:5173'),'registration_unavailable');
-    Deno.env.set('REGISTRATION_ENABLED','false'); Deno.env.set('LEGAL_TERMS_VERSION','terms-v1'); throws(()=>legalVersions('http://localhost:5173'),'registration_unavailable');
+    Deno.env.set('REGISTRATION_ENABLED','false'); Deno.env.set('LEGAL_TERMS_VERSION','1.0.0'); throws(()=>legalVersions('http://localhost:5173'),'registration_unavailable');
   } finally { for (const key of keys) previous[key]===undefined?Deno.env.delete(key):Deno.env.set(key,previous[key]!); }
 });
 Deno.test('production mode rejects test document versions', () => {
   const keys = ['REGISTRATION_ENABLED','REGISTRATION_TEST_MODE','LEGAL_TERMS_VERSION','LEGAL_PRIVACY_VERSION']; const previous=Object.fromEntries(keys.map(k=>[k,Deno.env.get(k)]));
-  try { Deno.env.set('REGISTRATION_ENABLED','true');Deno.env.set('REGISTRATION_TEST_MODE','false');Deno.env.set('LEGAL_TERMS_VERSION','draft-test-2026-08');Deno.env.set('LEGAL_PRIVACY_VERSION','draft-test-2026-08');throws(()=>legalVersions('https://ashurplatform.com'),'registration_unavailable');Deno.env.set('LEGAL_TERMS_VERSION','terms-v1');Deno.env.set('LEGAL_PRIVACY_VERSION','privacy-v1');assert(legalVersions('https://ashurplatform.com').mode==='production','production mode unavailable'); }
+  try { Deno.env.set('REGISTRATION_ENABLED','true');Deno.env.set('REGISTRATION_TEST_MODE','false');Deno.env.set('LEGAL_TERMS_VERSION','draft-test-2026-08');Deno.env.set('LEGAL_PRIVACY_VERSION','draft-test-2026-08');throws(()=>legalVersions('https://ashurplatform.com'),'registration_unavailable');Deno.env.set('LEGAL_TERMS_VERSION','1.0.0');Deno.env.set('LEGAL_PRIVACY_VERSION','1.0.0');const production=legalVersions('https://ashurplatform.com');assert(production.mode==='production','production mode unavailable');assert(production.terms==='1.0.0'&&production.privacy==='1.0.0','published versions not selected server-side'); }
   finally { for(const key of keys)previous[key]===undefined?Deno.env.delete(key):Deno.env.set(key,previous[key]!); }
 });
 Deno.test('bearer parsing rejects missing and empty values', () => { assert(bearerToken(new Request('https://local.test')) === null, 'missing bearer accepted'); assert(bearerToken(new Request('https://local.test', { headers: { Authorization: 'Bearer ' } })) === null, 'empty bearer accepted'); assert(bearerToken(new Request('https://local.test', { headers: { Authorization: 'Bearer token' } })) === 'token', 'valid bearer rejected'); });

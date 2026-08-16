@@ -1,6 +1,16 @@
 # Legal and compliance review checklist
 
-Nothing below is complete until supported by written evidence and an identified reviewer.
+Items are complete only when supported by evidence and an identified reviewer. Owner approval does not complete lawyer-review items.
+
+## Initial owner publication approval — 2026-08-16
+
+- [x] Terms of Service version 1.0.0 internally approved and published by the Ashur Platform owner
+- [x] Privacy Policy version 1.0.0 internally approved and published by the Ashur Platform owner
+- [x] Effective and last-updated date recorded as 2026-08-16 for both languages
+- [x] Registration acceptance required for Terms and Privacy only
+- [x] Trial and Download Policy and Refund Policy remain draft and inactive
+- [x] Lawyer-reviewed flag remains false
+- [ ] Production migration, Edge Function, legal-version environment, SMTP/OTP, and deployed-page parity verified
 
 ## Corporate and contacts
 
@@ -28,8 +38,8 @@ Nothing below is complete until supported by written evidence and an identified 
 
 ## Versioning and release
 
-- [ ] Each document assigned an immutable approved version
-- [ ] Effective and last-updated dates approved
+- [x] Terms and Privacy assigned immutable owner-approved version 1.0.0
+- [x] Terms and Privacy effective and last-updated dates owner-approved
 - [ ] Rendered content hash/evidence retained with approval record
 - [ ] Frontend and Edge Function version parity tested
 - [ ] Registration remains disabled until approved Terms/Privacy are deployed

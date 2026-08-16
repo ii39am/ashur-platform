@@ -128,11 +128,15 @@ The database script starts only the disposable local Supabase stack, resets its 
 
 ## Manual production order (not automated)
 
-1. Approve and publish versioned Terms and Privacy documents.
+Terms of Service and Privacy Policy are locally configured as owner-approved publication candidates at version `1.0.0`, effective and last updated `2026-08-16`. They are not represented as lawyer reviewed. Trial and Refund policies remain inactive drafts.
+
+1. Verify that the deployed `/terms` and `/privacy` output exactly matches version `1.0.0` in both languages.
 2. Review the migration and rerun the disposable database suite.
 3. Apply the migration to a staging project with `supabase db push` and repeat role tests there.
 4. Configure Auth OTP, password, CAPTCHA, SMTP, Site URL, and redirect settings.
 5. Configure function secrets/settings without placing them in Vite or Git.
+6. Set production registration values only after the preceding checks pass: `REGISTRATION_ENABLED=true`, `REGISTRATION_TEST_MODE=false`, `LEGAL_TERMS_VERSION=1.0.0`, `LEGAL_PRIVACY_VERSION=1.0.0`, and `APP_ORIGIN=https://ashurplatform.com`.
+7. Verify a real production signup OTP and transactional welcome message using a dedicated non-production test identity before opening registration traffic.
 6. Deploy `complete-registration`, then `send-welcome-email` with JWT verification enabled.
 7. Exercise registration, retry, reconciliation, and email delivery in staging.
 8. Enable both the frontend legal readiness flags and server `REGISTRATION_ENABLED` only after legal approval and staging sign-off.

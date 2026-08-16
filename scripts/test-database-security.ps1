@@ -64,17 +64,17 @@ Invoke-Db "update public.profiles set updated_at='2000-01-01', marketing_consent
 As-Role 'authenticated' $a "update public.profiles set full_name='User A Updated', marketing_consent=true where id='$a';" $true
 Invoke-Db "do `$`$ begin if (select updated_at <= '2000-01-01' or marketing_consent_updated_at <= '2000-01-01' from public.profiles where id='$a') then raise exception 'server timestamps not maintained'; end if; end `$`$;" $true
 
-As-Role 'service_role' '' "select public.finalize_ashur_registration('$unverified','No Verify','+9647701234567',false,null,null,null,null,false,null,'en',false,true,true,'terms-v1','privacy-v1',repeat('c',64));" $false
-As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Invalid','bad-phone',false,null,null,null,null,false,null,'en',false,true,true,'terms-v1','privacy-v1',repeat('d',64));" $false
-As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Invalid','+9647701234567',true,'Store','retail',null,0,false,null,'en',false,true,true,'terms-v1','privacy-v1',repeat('d',64));" $false
-As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Invalid','+9647701234567',false,null,null,null,null,false,null,'xx',false,true,true,'terms-v1','privacy-v1',repeat('d',64));" $false
-As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Invalid','+9647701234567',false,null,null,null,null,false,null,'en',false,false,true,'terms-v1','privacy-v1',repeat('d',64));" $false
+As-Role 'service_role' '' "select public.finalize_ashur_registration('$unverified','No Verify','+9647701234567',false,null,null,null,null,false,null,'en',false,true,true,'1.0.0','1.0.0',repeat('c',64));" $false
+As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Invalid','bad-phone',false,null,null,null,null,false,null,'en',false,true,true,'1.0.0','1.0.0',repeat('d',64));" $false
+As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Invalid','+9647701234567',true,'Store','retail',null,0,false,null,'en',false,true,true,'1.0.0','1.0.0',repeat('d',64));" $false
+As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Invalid','+9647701234567',false,null,null,null,null,false,null,'xx',false,true,true,'1.0.0','1.0.0',repeat('d',64));" $false
+As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Invalid','+9647701234567',false,null,null,null,null,false,null,'en',false,false,true,'1.0.0','1.0.0',repeat('d',64));" $false
 
 # Two independent database sessions finalize the same user concurrently.
-$finalizeB = "set role service_role; select (public.finalize_ashur_registration('$b','User B','+9647701234567',false,null,null,null,null,false,null,'en',false,true,true,'terms-v1','privacy-v1',repeat('b',64))).id;"
+$finalizeB = "set role service_role; select (public.finalize_ashur_registration('$b','User B','+9647701234567',false,null,null,null,null,false,null,'en',false,true,true,'1.0.0','1.0.0',repeat('b',64))).id;"
 $finalizeResults = Invoke-Concurrent $finalizeB
 Invoke-Db "do `$`$ begin if (select count(*) from public.profiles where id='$b') <> 1 or (select count(*) from public.user_legal_acceptances where user_id='$b') <> 2 or (select count(*) from public.transactional_email_outbox where user_id='$b') <> 1 then raise exception 'concurrent finalization duplicated state'; end if; end `$`$;" $true
-As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Different Payload','+9647701234567',false,null,null,null,null,false,null,'en',false,true,true,'terms-v1','privacy-v1',repeat('e',64));" $false
+As-Role 'service_role' '' "select public.finalize_ashur_registration('$b','Different Payload','+9647701234567',false,null,null,null,null,false,null,'en',false,true,true,'1.0.0','1.0.0',repeat('e',64));" $false
 
 # Two independent workers compete for one outbox event; exactly one may claim it.
 $claimResults = Invoke-Concurrent "set role service_role; select count(*) from public.claim_transactional_email('$b','account_created_welcome');"

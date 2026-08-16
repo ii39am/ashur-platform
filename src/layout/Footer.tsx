@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -32,7 +32,7 @@ export const Footer: React.FC = () => {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button href="/download" size="lg" icon={<ArrowRight className={`h-5 w-5 ${ar ? 'rotate-180' : ''}`} />}>{ar ? 'تحميل التجربة' : 'Download trial'}</Button>
-            <Button href="mailto:ashurplatform95@gmail.com?subject=Ashur%20ERP%20Consultation" variant="secondary" size="lg">{ar ? 'راسل فريق آشور' : 'Contact Ashur'}</Button>
+            <Button href="/support" variant="secondary" size="lg">{ar ? 'حالة الدعم' : 'Support status'}</Button>
           </div>
         </div>
       </section>
@@ -50,14 +50,10 @@ export const Footer: React.FC = () => {
             {links.map((link) => <li key={link.href}><a className="inline-flex min-h-11 items-center text-sm text-slate-400 hover:text-brand-400" href={link.href}>{link.label}</a></li>)}
           </ul>
         </nav>
-        <address className="not-italic">
-          <h3 className="mb-4 font-semibold text-white">{ar ? 'تواصل معنا' : 'Contact'}</h3>
-          <div className="space-y-3 text-sm text-slate-400">
-            <p className="flex items-center gap-3"><MapPin className="h-4 w-4 text-brand-400" />{ar ? 'بغداد، العراق' : 'Baghdad, Iraq'}</p>
-            <a className="flex min-h-11 items-center gap-3 hover:text-brand-400" href="tel:07870011886"><Phone className="h-4 w-4 text-brand-400" />07870011886</a>
-            <a className="flex min-h-11 items-center gap-3 break-all hover:text-brand-400" href="mailto:ashurplatform95@gmail.com"><Mail className="h-4 w-4 shrink-0 text-brand-400" />ashurplatform95@gmail.com</a>
-          </div>
-        </address>
+        <div>
+          <h3 className="mb-4 font-semibold text-white">{ar ? 'الدعم' : 'Support'}</h3>
+          <p className="text-sm leading-7 text-slate-400">{ar ? 'ستُنشر قنوات التواصل بعد التحقق منها.' : 'Contact channels will be published after verification.'}</p>
+        </div>
       </div>
       <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-slate-500">
         © {new Date().getFullYear()} {ar ? 'منصة آشور. جميع الحقوق محفوظة.' : 'Ashur Platform. All rights reserved.'}

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { availableDownloadBuilds, detectRecommendedPlatform } from './downloads';
 import { calculateAnnualSavings, confirmedPricingPlans } from './pricing';
-import { isLegalDocumentPublishable, legalDocuments, registrationLegalReady } from './legal';
+import { isLegalDocumentPublishable, legalDocuments, registrationDocumentsReady, registrationLegalReady } from './legal';
 
 describe('download configuration', () => {
   it('detects platforms without forcing a download', () => {
@@ -21,15 +21,27 @@ describe('pricing configuration', () => {
 });
 
 describe('legal configuration', () => {
-  it('keeps every unapproved draft unpublished', () => {
-    expect(Object.values(legalDocuments).every((document) => document.status === 'draft')).toBe(true);
+  it('publishes only the internally approved registration documents', () => {
     expect(Object.keys(legalDocuments)).toEqual(['terms', 'privacy', 'trial', 'refunds']);
-    expect(Object.values(legalDocuments).every((document) => !document.version && !document.effectiveDate)).toBe(true);
+    for (const id of ['terms', 'privacy'] as const) {
+      expect(legalDocuments[id]).toMatchObject({ status: 'internally_approved', publicationStatus: 'published', version: '1.0.0', effectiveDate: '2026-08-16', lastUpdatedDate: '2026-08-16', lawyerReviewed: false, registrationAcceptanceRequired: true });
+    }
+    for (const id of ['trial', 'refunds'] as const) {
+      expect(legalDocuments[id]).toMatchObject({ status: 'draft', publicationStatus: 'inactive', version: null, registrationAcceptanceRequired: false });
+    }
   });
 
-  it('fails registration closed while legal facts or versions are missing', () => {
-    expect(isLegalDocumentPublishable('terms')).toBe(false);
-    expect(isLegalDocumentPublishable('privacy')).toBe(false);
-    expect(registrationLegalReady).toBe(false);
+  it('enables the local publication candidate only for versioned Terms and Privacy', () => {
+    expect(isLegalDocumentPublishable('terms')).toBe(true);
+    expect(isLegalDocumentPublishable('privacy')).toBe(true);
+    expect(isLegalDocumentPublishable('trial')).toBe(false);
+    expect(isLegalDocumentPublishable('refunds')).toBe(false);
+    expect(registrationLegalReady).toBe(true);
+  });
+
+  it('fails closed for draft, missing, or mismatched registration-policy versions', () => {
+    expect(registrationDocumentsReady({ ...legalDocuments, terms: { ...legalDocuments.terms, status: 'draft' } })).toBe(false);
+    expect(registrationDocumentsReady({ ...legalDocuments, privacy: { ...legalDocuments.privacy, version: null } })).toBe(false);
+    expect(registrationDocumentsReady({ ...legalDocuments, privacy: { ...legalDocuments.privacy, version: '1.0.1' } })).toBe(false);
   });
 });

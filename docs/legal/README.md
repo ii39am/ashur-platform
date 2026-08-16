@@ -1,21 +1,22 @@
-# Ashur legal package — internal draft record
+# Ashur legal package — internal publication record
 
-Status: **DRAFT / UNPUBLISHED / NOT EFFECTIVE / REQUIRES QUALIFIED IRAQI COUNSEL REVIEW**
+Status: **TERMS AND PRIVACY INTERNALLY APPROVED FOR INITIAL PUBLICATION; NOT LAWYER REVIEWED**
 
-The website documents are product-integrated drafting material, not legal advice and not approved contractual text. Registration remains fail-closed until the Terms and Privacy documents have approved versions and dates and the minimum required business identity/contact facts are configured. Payment remains disabled; download builds remain unavailable.
+The Ashur Platform owner internally approved Terms of Service 1.0.0 and Privacy Policy 1.0.0 for initial publication, effective and last updated 2026-08-16. This is business-owner approval, not evidence of review or approval by qualified Iraqi legal counsel. Trial and Download Policy and Refund Policy remain draft, unpublished, inactive, and are not registration requirements. Payment and download builds remain unavailable.
 
 ## Missing decisions and facts
 
 | Item | Current state | Blocks |
 | --- | --- | --- |
-| Legal entity name and entity type | Not confirmed | Publication and registration |
+| Legal entity name and entity type | Not confirmed; public pages use “Ashur Platform” only as the trading name | Counsel/legal checklist; does not invent an entity |
 | Commercial registration number | Not confirmed | Publication |
 | Registered and operating addresses | Not confirmed | Publication |
-| Dedicated support, legal, and privacy email addresses | Not confirmed | Publication and registration |
+| Dedicated support, legal, and privacy email addresses | Not verified; therefore not displayed in the published Terms or Privacy pages | Contact publication |
 | Public phone number | Not confirmed | Contact disclosures |
 | Governing law and dispute forum | Requires Iraqi counsel | Terms/publication |
-| Minimum account age | Requires Iraqi counsel | Registration |
-| Terms/Privacy/Trial/Refund versions and dates | Not approved | Respective publication/acceptance |
+| Minimum account age | Requires Iraqi counsel; no unconfirmed numeric threshold is published | Counsel review |
+| Terms and Privacy versions and dates | Owner-approved 1.0.0; effective/updated 2026-08-16 | Production deployment parity |
+| Trial/Refund versions and dates | Draft and inactive | Trial/payment launch |
 | Trial duration, limits, licensing, builds, and support | Not configured | Trial launch/downloads |
 | Prices, currency, taxes, payment methods, renewals, cancellation, refunds | Not configured | Payment/checkout |
 | Hosting/processors/locations/transfer safeguards | Needs deployment inventory | Privacy publication |
@@ -40,7 +41,7 @@ Counsel must verify the original Arabic gazette texts, amendments, territorial s
 2. Complete Iraqi legal and Arabic-language review.
 3. Assign immutable versions and ISO dates to all approved documents.
 4. Ensure the exact rendered documents match the versions configured in the finalization Edge Function.
-5. Record approvals in the review checklist and change application configuration from `draft` to `approved` in a reviewed change.
+5. Record owner approval separately from lawyer review. Never mark the lawyer-review item complete without evidence.
 6. Test version parity, consent text, routes, printing, and RTL/LTR.
 7. Deploy the versioned documents before enabling registration, downloads, or payment acceptance.
 

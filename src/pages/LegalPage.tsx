@@ -10,22 +10,26 @@ export function LegalPage({ type }: { type: LegalDocumentId }) {
   const content = legalContent[language][type];
   const ui = legalUi[language];
   const configuration = legalDocuments[type];
+  const published = configuration.publicationStatus === 'published';
+  const metadata = published
+    ? ui.publishedMetadata(configuration.version!, configuration.effectiveDate!, configuration.lastUpdatedDate!)
+    : ui.draftMetadata;
 
   return <main className="legal-page min-h-screen bg-dark-950 px-4 pb-20 pt-28 sm:px-6 sm:pt-32" dir={dir}>
     <article className="mx-auto max-w-6xl" aria-labelledby="legal-title">
       <header className="border-b border-white/10 pb-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <p className="rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-2 text-sm font-semibold text-amber-300">{ui.draft}</p>
-          <button type="button" onClick={() => window.print()} className="legal-print inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/10 px-4 text-sm font-semibold text-slate-200 hover:bg-white/5"><Printer className="h-4 w-4" aria-hidden="true" />{ui.print}</button>
+          <p className={`rounded-full border px-4 py-2 text-sm font-semibold ${published ? 'border-cyan-400/30 bg-cyan-400/10 text-cyan-200' : 'border-amber-400/30 bg-amber-400/10 text-amber-300'}`}>{published ? ui.published : ui.draft}</p>
+          <button type="button" onClick={() => window.print()} className="legal-print inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/10 px-4 text-sm font-semibold text-slate-200 hover:bg-white/5"><Printer className="h-4 w-4" aria-hidden="true" />{published ? ui.printPublished : ui.print}</button>
         </div>
         <h1 id="legal-title" className="mt-6 text-4xl font-bold text-white sm:text-5xl">{content.title}</h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-300">{content.summary}</p>
-        <p className="mt-4 text-sm text-slate-400">{ui.metadata}</p>
+        <p className="mt-4 text-sm text-slate-400">{metadata}</p>
       </header>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[17rem_minmax(0,1fr)]">
         <aside className="lg:sticky lg:top-28 lg:self-start">
-          <div className="rounded-2xl border border-amber-400/25 bg-amber-400/5 p-5 text-sm leading-6 text-amber-100">{ui.notice}</div>
+          <div className={`rounded-2xl border p-5 text-sm leading-6 ${published ? 'border-cyan-400/20 bg-cyan-400/5 text-slate-300' : 'border-amber-400/25 bg-amber-400/5 text-amber-100'}`}>{published ? ui.publishedNotice : ui.notice}</div>
           <nav className="mt-6 rounded-2xl border border-white/10 bg-dark-800 p-5" aria-label={ui.contents}>
             <h2 className="font-semibold text-white">{ui.contents}</h2>
             <ol className="mt-3 space-y-1">
@@ -43,7 +47,7 @@ export function LegalPage({ type }: { type: LegalDocumentId }) {
         </div>
       </div>
       <footer className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-sm text-slate-400">
-        <span>{configuration.status === 'draft' ? ui.draft : content.shortTitle}</span>
+        <span>{configuration.status === 'draft' ? ui.draft : `${content.shortTitle} · ${configuration.version}`}</span>
         <Link to="/" className="inline-flex min-h-11 items-center text-brand-400 hover:text-brand-300">{ui.back}</Link>
       </footer>
     </article>
