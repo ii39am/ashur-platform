@@ -30,7 +30,7 @@ The function fails if any membership already exists, requires a verified MFA fac
 
 ## Hosting preparation
 
-`netlify.toml` supplies the SPA build and security headers; `public/_redirects` supplies route fallback. Its CSP intentionally contains the non-working `STAGING_PROJECT_REF` sentinel. Replace it with the exact staging project reference before any staging deployment; never use a wildcard Supabase origin.
+`netlify.toml` supplies the SPA build and security headers; `public/_redirects` supplies route fallback. Its CSP permits only the reviewed Ashur Supabase HTTPS and WSS endpoints; never replace them with wildcard origins.
 
 Future DNS, not configured here:
 
