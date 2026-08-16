@@ -31,7 +31,7 @@ Never place a service-role key, payment secret, private storage credential, or s
 - Configure the production password policy to match or exceed the UI policy: 10 characters with uppercase, lowercase, and a number.
 - Enable CAPTCHA/Cloudflare Turnstile for signup and resend before opening registration. Add its public site key only after the provider is approved; keep the secret server-side.
 - Configure Resend as Custom SMTP with the verified `ashurplatform.com` sender.
-- In **Authentication > Email Templates > Confirm signup**, use the reviewed `supabase/templates/confirm-signup.html` template. It renders the Supabase-hosted `{{ .Token }}` six-digit OTP and is compatible with `verifyOtp({ email, token, type: 'signup' })`.
+- In **Authentication > Email Templates > Confirm signup**, use the reviewed `supabase/templates/confirm-signup.html` template. It renders the Supabase-hosted `{{ .Token }}` eight-digit signup OTP and is compatible with `verifyOtp({ email, token, type: 'signup' })`.
 
 ## Profile migration
 
